@@ -58,6 +58,31 @@
 <li><?php echo ' <a href="' . zen_href_link(FILENAME_ACCOUNT_EDIT, '', 'SSL') . '">' . MY_ACCOUNT_INFORMATION . '</a>'; ?></li>
 <li><?php echo ' <a href="' . zen_href_link(FILENAME_ADDRESS_BOOK, '', 'SSL') . '">' . MY_ACCOUNT_ADDRESS_BOOK . '</a>'; ?></li>
 <li><?php echo ' <a href="' . zen_href_link(FILENAME_ACCOUNT_PASSWORD, '', 'SSL') . '">' . MY_ACCOUNT_PASSWORD . '</a>'; ?></li>
+
+<?php
+    // -----
+    // If a plugin has additional links to add to the form, it supplies that information here.
+    // Additional fields are specified as a simple array of arrays
+    //
+    // $additional_fields = [
+    //      [
+    //          'link' => 'The page for the link to go to' (Must be defined with filename)
+    //          'name' => 'name "for" the link'
+    //      ],
+    //      ...
+    // ];
+    //
+    $additional_fields = [];
+    $zco_notifier->notify('NOTIFY_ACCOUNT_LINK_ADDITION', $_SESSION['customer_id'], $additional_fields);
+    if (!empty($additional_fields)) {
+        foreach ($additional_fields as $current_field) {
+?>    
+        <li><?php echo '<a href="' . zen_href_link($current_field['link'], '', 'SSL') . '">' . $current_field['name'] . '</a>'; ?></li>
+<?php
+        }
+    }
+?>
+    
 </ul>
 
 
@@ -93,4 +118,15 @@
   }
 ?>
 <br class="clearBoth">
+
+<?php 
+    // -----
+    // If a plugin has additional information or table to add to the form, it supplies that information here.
+    //
+    // The observer or class may echo output here eg: table, div etc 
+    // -----
+    //
+    $zco_notifier->notify('NOTIFY_ACCOUNT_ADDITIONAL_INPUT_START', $_SESSION['customer_id']);
+?>
+
 </div>
