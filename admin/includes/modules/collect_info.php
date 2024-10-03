@@ -433,6 +433,37 @@ if (zen_get_categories_status($current_category_id) == 0 && $pInfo->products_sta
       <label class="radio-inline"><?php echo zen_draw_radio_field('products_quantity_mixed', '0', ($pInfo->products_quantity_mixed == 0)) . TEXT_NO; ?></label>
     </div>
   </div>
+
+  <?php 
+    // -----
+    // If a plugin has additional fields to add to the form just before the description, it supplies that information here.
+    // Additional fields are specified as a simple array of arrays,
+    // with each array element identifying a new input element:
+    //
+    // $before_desc_fields = [
+    //      [
+    //          'label' => 'The text to include for the field label',
+    //          'fieldname' => 'label "for" attribute, must match id of input field'
+    //          'input' => 'The form-related portion of the field',
+    //      ],
+    //      ...
+    // ];
+    //
+      $before_desc_fields = [];
+      $zco_notifier->notify('NOTIFY_ADMIN_PRODUCT_EDIT_BEFORE_DESC_START', $pInfo, $before_desc_fields);
+      if (!empty($before_desc_fields)) {
+         foreach ($before_desc_fields as $current_field) {
+  ?>
+    <div class="form-group">
+        <?php echo zen_draw_label($current_field['label'], $current_field['fieldname'], 'class="col-sm-3 control-label"'); ?>
+        <div class="col-sm-9 col-md-6"><?php echo $current_field['input']; ?></div>
+    </div>
+    
+  <?php
+         }
+      }
+    ?> 
+
   <div class="form-group">
       <p class="col-sm-3 control-label"><?php echo TEXT_PRODUCTS_DESCRIPTION; ?></p>
     <div class="col-sm-9 col-md-6">
@@ -451,6 +482,36 @@ if (zen_get_categories_status($current_category_id) == 0 && $pInfo->products_sta
       ?>
     </div>
   </div>
+
+  <?php 
+    // -----
+    // If a plugin has additional fields to add to the form just after the description, it supplies that information here.
+    // Additional fields are specified as a simple array of arrays,
+    // with each array element identifying a new input element:
+    //
+    // $after_desc_fields = [
+    //      [
+    //          'label' => 'The text to include for the field label',
+    //          'fieldname' => 'label "for" attribute, must match id of input field'
+    //          'input' => 'The form-related portion of the field',
+    //      ],
+    //      ...
+    // ];
+    //
+      $zco_notifier->notify('NOTIFY_ADMIN_PRODUCT_EDIT_AFTER_DESC_END', $pInfo, $after_desc_fields);
+      if (!empty($after_desc_fields)) {
+         foreach ($after_desc_fields as $current_field) {
+  ?>
+    <div class="form-group">
+        <?php echo zen_draw_label($current_field['label'], $current_field['fieldname'], 'class="col-sm-3 control-label"'); ?>
+        <div class="col-sm-9 col-md-6"><?php echo $current_field['input']; ?></div>
+    </div>
+    
+  <?php
+         }
+      }
+    ?>  
+
   <div class="form-group">
       <?php echo zen_draw_label(TEXT_PRODUCTS_QUANTITY, 'products_quantity', 'class="col-sm-3 control-label"'); ?>
     <div class="col-sm-9 col-md-6">
@@ -469,7 +530,7 @@ if (zen_get_categories_status($current_category_id) == 0 && $pInfo->products_sta
     if (!empty($pInfo->products_image)) { ?>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9 col-md-6">
-                <?php echo zen_info_image($pInfo->products_image, (is_array($pInfo->products_name) ? $pInfo->products_name[$_SESSION['languages_id']] : $pInfo->products_name)); ?>
+                 <?php echo zen_info_image($pInfo->products_image, (is_array($pInfo->products_name) ? $pInfo->products_name[$_SESSION['languages_id']] : $pInfo->products_name),SMALL_IMAGE_WIDTH,SMALL_IMAGE_HEIGHT); ?>
                 <br>
                 <?php echo $pInfo->products_image; ?>
             </div>
